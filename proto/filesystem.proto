@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package filesystem;
+
+option go_package = "breezeFS/proto;pb";
+
+service ManagerService {
+  rpc RegisterNode(RegisterNodeRequest) returns (RegisterNodeResponse);
+  rpc GetNodesForChunks(GetNodesForChunksRequest) returns (GetNodesForChunksResponse);
+  rpc GetChunkLocations(GetChunkLocationsRequest) returns (GetChunkLocationsResponse);
+}
+message RegisterNodeRequest {
+  string node_address = 1;
+}
+
+message RegisterNodeResponse {
+  string message = 1;
+}
+
+message GetNodesForChunksRequest {
+  string file_id = 1;         // Unique identifier for the file
+  int32 total_chunks = 2;     // Total number of chunks to be uploaded
+  string file_type = 3;       // File Type
+}
+
+message ChunkNodeInfo {
+  int32 chunk_id = 1;         // ID of the chunk
+  string node_address = 2;    // Address of the node where this chunk should be uploaded
+}
+
+message GetNodesForChunksResponse {
+  repeated ChunkNodeInfo nodes = 1; // List of node addresses for each chunk
+}
+
+message GetChunkLocationsRequest {
+  string file_id = 1;
+}
+
+message GetChunkLocationsResponse {
+  repeated ChunkLocationInfo chunks = 1;
+  string file_type = 2;
+}
+
+message ChunkLocationInfo {
+  int32 chunk_id = 1;
+  repeated string nodes = 2;
+}
